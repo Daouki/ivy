@@ -45,6 +45,8 @@ namespace Ivy
         {
             var lexer = new Lexer(sourceCode);
             var tokens = lexer.ScanTokens();
+            var parser = new Parser(tokens);
+            var ast = parser.Parse();
         }
     }
 }
