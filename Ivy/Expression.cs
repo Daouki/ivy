@@ -1,7 +1,14 @@
 namespace Ivy
 {
-    public class Expression
+    public abstract class Expression
     {
+        public interface IVisitor<T>
+        {
+            T VisitBinaryExpression(Binary expression);
+            T VisitUnaryExpression(Unary expression);
+            T VisitLiteralExpression(Literal expression);
+        }
+        
         public class Binary : Expression
         {
             public readonly Expression Left;
@@ -14,6 +21,8 @@ namespace Ivy
                 Operator = @operator;
                 Right = right;
             }
+
+            public override T Accept<T>(IVisitor<T> visitor) => visitor.VisitBinaryExpression(this);
         }
 
         public class Unary : Expression
@@ -26,6 +35,8 @@ namespace Ivy
                 Operator = @operator;
                 Right = right;
             }
+
+            public override T Accept<T>(IVisitor<T> visitor) => visitor.VisitUnaryExpression(this);
         }
 
         public class Literal : Expression
@@ -36,6 +47,11 @@ namespace Ivy
             {
                 Value = value;
             }
+
+            public override T Accept<T>(IVisitor<T> visitor) =>
+                visitor.VisitLiteralExpression(this);
         }
+
+        public abstract T Accept<T>(IVisitor<T> visitor);
     }
 }

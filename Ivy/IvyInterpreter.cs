@@ -45,8 +45,19 @@ namespace Ivy
         {
             var lexer = new Lexer(sourceCode);
             var tokens = lexer.ScanTokens();
+            
             var parser = new Parser(tokens);
             var ast = parser.Parse();
+            
+            // We don't need tokens anymore.
+            // TODO: Scanning on demand.
+            tokens.Clear();
+            
+            var compiler = new Compiler(ast);
+            var byteCode = compiler.Compile();
+            
+            var virtualMachine = new VirtualMachine(byteCode);
+            virtualMachine.Execute();
         }
     }
 }

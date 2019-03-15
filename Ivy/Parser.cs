@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace Ivy
 {
@@ -22,7 +21,7 @@ namespace Ivy
         {
             _tokens = tokens;
         }
-
+        
         public Expression Parse()
         {
             return ParseExpression();
@@ -71,7 +70,7 @@ namespace Ivy
             {
                 case TokenType.Integer:
                     return new Expression.Literal(token.Literal);
-
+                
                 default:
                     return null;
             }

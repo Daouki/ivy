@@ -52,9 +52,7 @@ namespace Ivy
             else if (char.IsLetterOrDigit(c))
                 ScanIdentifierOrKeyword();
             else
-            {
-                // TODO: Error.
-            }
+                throw new Exception("Unknown character");
         }
 
         private void ScanOperator()
@@ -125,11 +123,7 @@ namespace Ivy
 
         private bool IsAtEnd() => _current >= _sourceCode.Length;
 
-        private char GetNextCharacter()
-        {
-            _current++;
-            return IsAtEnd() ? '\0' : _sourceCode[_current - 1];
-        }
+        private char GetNextCharacter() =>_sourceCode[_current++];
 
         private char PeekCurrentCharacter() => _current == 0 ? '\0' : _sourceCode[_current - 1];
         
