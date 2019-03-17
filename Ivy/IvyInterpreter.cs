@@ -58,6 +58,9 @@ namespace Ivy
             
             var virtualMachine = new VirtualMachine(byteCode);
             virtualMachine.Execute();
+
+            var topValue = virtualMachine.GetStackTop();
+            Console.WriteLine($":: {topValue}\n");
         }
     }
 }

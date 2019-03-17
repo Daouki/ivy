@@ -5,7 +5,7 @@ namespace Ivy
 {
     public class Parser
     {
-        private static readonly Dictionary<TokenType, int> _binaryOperatorPrecedence =
+        private static readonly Dictionary<TokenType, int> BinaryOperatorPrecedence =
             new Dictionary<TokenType, int>
             {
                 {TokenType.Minus, 30},
@@ -15,18 +15,26 @@ namespace Ivy
             };
         
         private readonly List<Token> _tokens;
-        private int _current = 0;
+        private int _current;
 
         public Parser(List<Token> tokens)
         {
             _tokens = tokens;
         }
         
-        public Expression Parse()
+        public List<Statement> Parse()
         {
-            return ParseExpression();
+            var ast = new List<Statement>();
+            while (!IsAtEnd())
+                ast.Add(ParseStatement());
+            return ast;
         }
 
+        private Statement ParseStatement()
+        {
+            return new Statement.ExpressionStatement(ParseExpression());
+        }
+        
         private Expression ParseExpression()
         {
             return ParseBinaryExpression();
@@ -117,6 +125,6 @@ namespace Ivy
         private Token PeekPreviousToken() => _current != 0 ? _tokens[_current - 1] : _tokens[0];
 
         private int GetNextTokenPrecedence() =>
-            _binaryOperatorPrecedence.GetValueOrDefault(PeekCurrentToken().Type, -1);
+            BinaryOperatorPrecedence.GetValueOrDefault(PeekCurrentToken().Type, -1);
     }
 }

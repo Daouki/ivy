@@ -12,24 +12,34 @@ namespace Ivy
     /// <summary>
     /// Generates byte code from an AST.
     /// </summary>
-    public class Compiler : Expression.IVisitor<Void>
+    public class Compiler : Statement.IVisitor<Void>, Expression.IVisitor<Void>
     {
-        private readonly Expression _ast;
+        private readonly List<Statement> _ast;
         private readonly List<byte> _byteCode = new List<byte>();
         
-        public Compiler(Expression ast)
+        public Compiler(List<Statement> ast)
         {
             _ast = ast;
         }
 
         public List<byte> Compile()
         {
-            VisitExpression(_ast);
+            foreach (var statement in _ast)
+                VisitStatement(statement);
             return _byteCode;
         }
 
+        private void VisitStatement(Statement statement) =>
+            statement.Accept<Void>(this);
+        
         private void VisitExpression(Expression expression) =>
-            expression.Accept<Void>((Expression.IVisitor<Void>) this);
+            expression.Accept<Void>(this);
+
+        public Void VisitExpresionStatement(Statement.ExpressionStatement statement)
+        {
+            VisitExpression(statement.Expression);
+            return null;
+        }
         
         public Void VisitBinaryExpression(Expression.Binary expression)
         {

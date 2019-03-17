@@ -2,7 +2,7 @@ namespace Ivy
 {
     public abstract class Expression
     {
-        public interface IVisitor<T>
+        public interface IVisitor<out T>
         {
             T VisitBinaryExpression(Binary expression);
             T VisitUnaryExpression(Unary expression);

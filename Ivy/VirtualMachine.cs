@@ -73,5 +73,10 @@ namespace Ivy
                 }
             }
         }
+
+        public long GetStackTop()
+        {
+            return (long)_stack.Peek();
+        }
     }
 }
