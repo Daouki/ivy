@@ -5,6 +5,8 @@ namespace Ivy
 {
     public class ParseException : Exception
     {
+        public Token Token { get; }
+        
         public ParseException()
         {
         }
@@ -15,6 +17,11 @@ namespace Ivy
 
         public ParseException(string message, Exception innerException) : base(message, innerException)
         {
+        }
+
+        public ParseException(string message, Token token) : base(message)
+        {
+            Token = token;
         }
 
         protected ParseException(SerializationInfo info, StreamingContext context) : base(info, context)

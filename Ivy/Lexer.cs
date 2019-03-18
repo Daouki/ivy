@@ -18,6 +18,7 @@ namespace Ivy
         private int _start = 0;
         private int _current = 0;
         private int _line = 1;
+        private int _lastNewLine = 0;
 
         public Lexer(string sourceCode)
         {
@@ -43,7 +44,10 @@ namespace Ivy
             if (char.IsWhiteSpace(c))
             {
                 if (c == '\n')
+                {
+                    _lastNewLine = _current;
                     _line++;
+                }
             }
             else if (char.IsSymbol(c) || char.IsPunctuation(c))
                 ScanOperator();
@@ -118,12 +122,12 @@ namespace Ivy
                     break;
             }
             
-            _tokens.Add(new Token(type, lexeme, literal, "", _line, 0, _start, length));
+            _tokens.Add(new Token(type, lexeme, literal, "", _line, _current - _lastNewLine + 1, _start, length));
         }
 
         private bool IsAtEnd() => _current >= _sourceCode.Length;
 
-        private char GetNextCharacter() =>_sourceCode[_current++];
+        private char GetNextCharacter() => _sourceCode[_current++];
 
         private char PeekCurrentCharacter() => _current == 0 ? '\0' : _sourceCode[_current - 1];
         

@@ -25,8 +25,18 @@ namespace Ivy
         public List<Statement> Parse()
         {
             var ast = new List<Statement>();
-            while (!IsAtEnd())
-                ast.Add(ParseStatement());
+            try
+            {
+                while (!IsAtEnd())
+                    ast.Add(ParseStatement());
+            }
+            catch (ParseException e)
+            {
+                var token = e.Token;
+                IvyInterpreter.Context.Instance.ReportError(token.FilePath, token.Line,
+                    token.Column, e.Message);
+            }
+
             return ast;
         }
 
@@ -80,7 +90,7 @@ namespace Ivy
                     return new Expression.Literal(token.Literal);
                 
                 default:
-                    return null;
+                    throw new ParseException("Expected primary expression", token);
             }
         }
 
