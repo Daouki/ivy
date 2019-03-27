@@ -6,6 +6,7 @@ namespace Ivy
         {
             T VisitExpresionStatement(ExpressionStatement statement);
             T VisitLetBinding(LetBinding statement);
+            T VisitPrint(Print statement);
         }
 
         public class LetBinding : Statement
@@ -21,6 +22,19 @@ namespace Ivy
 
             public override T Accept<T>(IVisitor<T> visitor) =>
                 visitor.VisitLetBinding(this);
+        }
+
+        public class Print : Statement
+        {
+            public Expression Expression;
+
+            public Print(Expression expression)
+            {
+                Expression = expression;
+            }
+
+            public override T Accept<T>(IVisitor<T> visitor) =>
+                visitor.VisitPrint(this);
         }
 
         public class ExpressionStatement : Statement

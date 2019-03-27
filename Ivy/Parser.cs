@@ -44,6 +44,8 @@ namespace Ivy
         {
             if (MatchToken(TokenType.Let))
                 return ParseLetBinding();
+            else if (MatchToken(TokenType.Print))
+                return ParsePrintStatement();
             return new Statement.ExpressionStatement(ParseExpression());
         }
 
@@ -55,7 +57,15 @@ namespace Ivy
             ConsumeToken(TokenType.Semicolon);
             return new Statement.LetBinding(identifier, initializer);
         }
+
+        private Statement ParsePrintStatement()
+        {
+            var expression = ParseExpression();
+            ConsumeToken(TokenType.Semicolon);
+            return new Statement.Print(expression);
+        }
         
+
         private Expression ParseExpression() => ParseBinaryExpression();
 
         private Expression ParseBinaryExpression()
@@ -94,6 +104,9 @@ namespace Ivy
             {
                 case TokenType.Integer:
                     return new Expression.Literal(token.Literal);
+                
+                case TokenType.Identifier:
+                    return new Expression.AtomReference(token);
                 
                 default:
                     throw new ParseException("Expected primary expression", token);

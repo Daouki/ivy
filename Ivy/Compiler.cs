@@ -44,6 +44,13 @@ namespace Ivy
             return null;
         }
 
+        public Void VisitPrint(Statement.Print statement)
+        {
+            VisitExpression(statement.Expression);
+            _byteCode.Add((byte) Instruction.PrintI64);
+            return null;
+        }
+
         private void StoreLocal(Token identifier)
         {
             _byteCode.Add((byte) Instruction.StoreI64);
@@ -93,7 +100,7 @@ namespace Ivy
             return null;
         }
 
-        public Void VisitLiteralExpression(Expression.Literal expression)
+        public Void VisitLiteral(Expression.Literal expression)
         {
             switch (expression.Value)
             {
@@ -106,6 +113,23 @@ namespace Ivy
                     throw new Exception();
             }
 
+            return null;
+        }
+
+        public Void VisitAtomReference(Expression.AtomReference expression)
+        {
+            var identifier = expression.Identifier;
+            var localIndex = _locals[0].FindIndex((local) => local == identifier.Lexeme); 
+            if (localIndex > -1)
+            {
+                _byteCode.Add((byte) Instruction.LoadI64);
+                _byteCode.AddRange(BitConverter.GetBytes((ulong) localIndex));
+            }
+            else
+            {
+                IvyInterpreter.Context.Instance.ReportError(identifier.FilePath, identifier.Line,
+                    identifier.Column, "Identifier was not defined in the current scope");
+            }
             return null;
         }
     }

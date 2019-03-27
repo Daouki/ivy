@@ -13,6 +13,8 @@ namespace Ivy
         SubI64,
         
         StoreI64,
-        LoadI64
+        LoadI64,
+        
+        PrintI64
     }
 }

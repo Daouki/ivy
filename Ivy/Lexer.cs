@@ -9,7 +9,8 @@ namespace Ivy
         private static readonly Dictionary<string, TokenType> _keywords =
             new Dictionary<string, TokenType>
             {
-                {"let", TokenType.Let}
+                {"let", TokenType.Let},
+                {"print", TokenType.Print},
             };
 
         private readonly string _sourceCode;

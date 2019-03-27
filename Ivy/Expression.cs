@@ -6,7 +6,8 @@ namespace Ivy
         {
             T VisitBinaryExpression(Binary expression);
             T VisitUnaryExpression(Unary expression);
-            T VisitLiteralExpression(Literal expression);
+            T VisitLiteral(Literal expression);
+            T VisitAtomReference(AtomReference expression);
         }
         
         public class Binary : Expression
@@ -49,7 +50,20 @@ namespace Ivy
             }
 
             public override T Accept<T>(IVisitor<T> visitor) =>
-                visitor.VisitLiteralExpression(this);
+                visitor.VisitLiteral(this);
+        }
+
+        public class AtomReference : Expression
+        {
+            public Token Identifier;
+            
+            public AtomReference(Token identifier)
+            {
+                Identifier = identifier;
+            }
+
+            public override T Accept<T>(IVisitor<T> visitor) =>
+                visitor.VisitAtomReference(this);
         }
 
         public abstract T Accept<T>(IVisitor<T> visitor);

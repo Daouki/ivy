@@ -15,9 +15,11 @@ namespace Ivy
         Minus,
         Plus,
         Slash,
-        
+
+        Print,
+
         Semicolon,
-        
+
         Unknown,
         EndOfFile
     }
