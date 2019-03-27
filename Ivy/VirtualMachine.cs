@@ -7,12 +7,15 @@ namespace Ivy
     {
         private readonly List<byte> _byteCode;
         
-        private Stack<ulong> _stack = new Stack<ulong>(128);
+        private readonly Stack<ulong> _stack = new Stack<ulong>(128);
+        private readonly List<ulong> _locals = new List<ulong>(512);
         private int _instructionPointer = 0;
         
         public VirtualMachine(List<byte> byteCode)
         {
             _byteCode = byteCode;
+            for (var i = 0; i < _locals.Capacity; i += 1)
+                _locals.Add(0);
         }
 
         public void Execute()
@@ -25,13 +28,15 @@ namespace Ivy
                 {
                     case Instruction.NoOperation:
                         break;
-                   
+
                     case Instruction.Push64:
+                    {
                         var value = _byteCode.GetRange(_instructionPointer, 8).ToArray();
                         _stack.Push(BitConverter.ToUInt64(value));
                         _instructionPointer += 8;
                         break;
-                    
+                    }
+
                     case Instruction.Pop64:
                         _stack.Pop();
                         break;
@@ -68,15 +73,41 @@ namespace Ivy
                         break;
                     }
                     
+                    case Instruction.StoreI64:
+                    {
+                        var location = GetUInt64FromByteCode();
+                        var value = _stack.Pop();
+                        _locals[(int) location] = value;
+                        break;
+                    }
+
+                    case Instruction.LoadI64:
+                    {
+                        var location = GetUInt64FromByteCode();
+                        _stack.Push(_locals[(int) location]);
+                        break;
+                    }
+                    
                     default:
                         throw new Exception("Invalid instruction");
                 }
             }
         }
 
-        public long GetStackTop()
+        private long GetInt64FromByteCode()
         {
-            return (long)_stack.Peek();
+            var bytes = _byteCode.GetRange(_instructionPointer, 8).ToArray();
+            var value = BitConverter.ToInt64(bytes);
+            _instructionPointer += 8;
+            return value;
+        }
+
+        private ulong GetUInt64FromByteCode()
+        {
+            var bytes = _byteCode.GetRange(_instructionPointer, 8).ToArray();
+            var value = BitConverter.ToUInt64(bytes);
+            _instructionPointer += 8;
+            return value;
         }
     }
 }

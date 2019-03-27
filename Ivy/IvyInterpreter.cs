@@ -87,9 +87,6 @@ namespace Ivy
             virtualMachine.Execute();
             if (Context.Instance.ErrorsReported > 0)
                 return;
-
-            var topValue = virtualMachine.GetStackTop();
-            Console.WriteLine($":: {topValue}\n");
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Ivy
 {
@@ -16,6 +17,8 @@ namespace Ivy
     {
         private readonly List<Statement> _ast;
         private readonly List<byte> _byteCode = new List<byte>();
+
+        private readonly List<List<string>> _locals = new List<List<string>>(32);
         
         public Compiler(List<Statement> ast)
         {
@@ -24,16 +27,29 @@ namespace Ivy
 
         public List<byte> Compile()
         {
+            _locals.Add(new List<string>(512));
+            
             foreach (var statement in _ast)
                 VisitStatement(statement);
             return _byteCode;
         }
 
         private void VisitStatement(Statement statement) =>
-            statement.Accept<Void>(this);
-        
-        private void VisitExpression(Expression expression) =>
-            expression.Accept<Void>(this);
+            statement.Accept(this);
+
+        public Void VisitLetBinding(Statement.LetBinding statement)
+        {
+            VisitExpression(statement.Initializer);
+            StoreLocal(statement.Identifier);
+            return null;
+        }
+
+        private void StoreLocal(Token identifier)
+        {
+            _byteCode.Add((byte) Instruction.StoreI64);
+            _byteCode.AddRange(BitConverter.GetBytes((ulong) _locals.Count - 1));
+            _locals[0].Add(identifier.Lexeme);
+        }
 
         public Void VisitExpresionStatement(Statement.ExpressionStatement statement)
         {
@@ -41,6 +57,9 @@ namespace Ivy
             return null;
         }
         
+        private void VisitExpression(Expression expression) =>
+            expression.Accept<Void>(this);
+
         public Void VisitBinaryExpression(Expression.Binary expression)
         {
             VisitExpression(expression.Right);

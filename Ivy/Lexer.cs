@@ -84,6 +84,10 @@ namespace Ivy
                     PushToken(TokenType.Slash);
                     break;
                 
+                case ';':
+                    PushToken(TokenType.Semicolon);
+                    break;
+                
                 default:
                     PushToken(TokenType.Unknown);
                     break;

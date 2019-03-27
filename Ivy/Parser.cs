@@ -42,13 +42,21 @@ namespace Ivy
 
         private Statement ParseStatement()
         {
+            if (MatchToken(TokenType.Let))
+                return ParseLetBinding();
             return new Statement.ExpressionStatement(ParseExpression());
         }
-        
-        private Expression ParseExpression()
+
+        private Statement ParseLetBinding()
         {
-            return ParseBinaryExpression();
+            var identifier = ConsumeToken(TokenType.Identifier);
+            ConsumeToken(TokenType.Equals);
+            var initializer = ParseExpression();
+            ConsumeToken(TokenType.Semicolon);
+            return new Statement.LetBinding(identifier, initializer);
         }
+        
+        private Expression ParseExpression() => ParseBinaryExpression();
 
         private Expression ParseBinaryExpression()
         {
@@ -68,9 +76,7 @@ namespace Ivy
                 var right = ParseUnaryExpression();
                 var nextOperatorPrecedence = GetNextTokenPrecedence();
                 if (operatorPrecedence < nextOperatorPrecedence)
-                {
                     right = ParseBinaryExpression(right, operatorPrecedence + 1);
-                }
 
                 left = new Expression.Binary(left, @operator, right);
             }
@@ -115,10 +121,11 @@ namespace Ivy
         /// when fails to match the token type.
         /// </summary>
         /// <param name="types">Token types to compare with.</param>
-        private void ConsumeToken(params TokenType[] types)
+        private Token ConsumeToken(params TokenType[] types)
         {
             if (!MatchToken(types))
                 throw new ParseException("TODO: ConsumeToken: token type not matched");
+            return PeekPreviousToken();
         }
 
         private bool IsAtEnd() => PeekCurrentToken().Type == TokenType.EndOfFile;

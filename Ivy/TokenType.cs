@@ -16,6 +16,8 @@ namespace Ivy
         Plus,
         Slash,
         
+        Semicolon,
+        
         Unknown,
         EndOfFile
     }

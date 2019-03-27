@@ -11,5 +11,8 @@ namespace Ivy
         DivI64,          
         MulI64,
         SubI64,
+        
+        StoreI64,
+        LoadI64
     }
 }
