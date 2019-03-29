@@ -44,6 +44,40 @@ namespace Ivy
             return null;
         }
 
+        public Void VisitIf(Statement.If statement)
+        {
+            int elseOffset;
+            
+            VisitExpression(statement.Condition);
+            _byteCode.Add((byte) Instruction.JmpIfFalse);
+            var ifFalseJumpOffsetIndex = _byteCode.Count;
+            _byteCode.AddRange(BitConverter.GetBytes(0ul));
+
+            var thenOffset = _byteCode.Count;
+            VisitBlock(statement.ThenBlock);
+
+            if (statement.ElseBlock != null)
+            {
+                elseOffset = _byteCode.Count - thenOffset;
+                VisitBlock(statement.ElseBlock);
+            }
+            else
+            {
+                elseOffset = _byteCode.Count - thenOffset;
+            }
+            
+            // TODO: There must be a better way.
+            _byteCode.RemoveRange(ifFalseJumpOffsetIndex, 8);
+            _byteCode.InsertRange(ifFalseJumpOffsetIndex, BitConverter.GetBytes((long) elseOffset));
+            return null;
+        }
+
+        private void VisitBlock(IEnumerable<Statement> block)
+        {
+            foreach (var statement in block)
+                VisitStatement(statement);
+        }
+
         public Void VisitPrint(Statement.Print statement)
         {
             VisitExpression(statement.Expression);
@@ -87,6 +121,14 @@ namespace Ivy
                 
                 case TokenType.Slash:
                     _byteCode.Add((byte) Instruction.DivI64);
+                    break;
+                
+                case TokenType.Less:
+                    _byteCode.Add((byte) Instruction.CmpLessI64);
+                    break;
+                
+                case TokenType.Greater:
+                    _byteCode.Add((byte) Instruction.CmpGreaterI64);
                     break;
                 
                 default:

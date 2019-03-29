@@ -11,9 +11,22 @@ namespace Ivy
         DivI64,          
         MulI64,
         SubI64,
+
+        CmpLessI64,
+        CmpGreaterI64,
         
         StoreI64,
         LoadI64,
+        
+        // Unconditional jumps.
+        JmpShort,
+        JmpFar,
+        
+        // Conditional jumps. Always relative.
+        JmpIfZero,
+        JmpIfFalse = JmpIfZero,
+        JmpIfNotZero,
+        JmpIfTrue = JmpIfNotZero,
         
         PrintI64
     }

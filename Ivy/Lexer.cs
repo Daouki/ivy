@@ -10,6 +10,9 @@ namespace Ivy
             new Dictionary<string, TokenType>
             {
                 {"let", TokenType.Let},
+                {"if", TokenType.If},
+                {"else", TokenType.Else},
+                {"end", TokenType.End},
                 {"print", TokenType.Print},
             };
 
@@ -83,6 +86,14 @@ namespace Ivy
                 
                 case '/':
                     PushToken(TokenType.Slash);
+                    break;
+                
+                case '<':
+                    PushToken(TokenType.Less);
+                    break;
+                
+                case '>':
+                    PushToken(TokenType.Greater);
                     break;
                 
                 case ';':

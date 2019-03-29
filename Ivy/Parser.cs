@@ -8,8 +8,10 @@ namespace Ivy
         private static readonly Dictionary<TokenType, int> BinaryOperatorPrecedence =
             new Dictionary<TokenType, int>
             {
-                {TokenType.Minus, 30},
-                {TokenType.Plus, 30},
+                {TokenType.Less, 10},
+                {TokenType.Greater, 10},
+                {TokenType.Minus, 20},
+                {TokenType.Plus, 20},
                 {TokenType.Asterisk, 40},
                 {TokenType.Slash, 40},
             };
@@ -44,8 +46,11 @@ namespace Ivy
         {
             if (MatchToken(TokenType.Let))
                 return ParseLetBinding();
-            else if (MatchToken(TokenType.Print))
+            if (MatchToken(TokenType.If))
+                return ParseIfStatement();
+            if (MatchToken(TokenType.Print))
                 return ParsePrintStatement();
+                
             return new Statement.ExpressionStatement(ParseExpression());
         }
 
@@ -58,13 +63,30 @@ namespace Ivy
             return new Statement.LetBinding(identifier, initializer);
         }
 
+        private Statement ParseIfStatement()
+        {
+            var condition = ParseExpression();
+            var thenBlock = ParseBlock(TokenType.Else, TokenType.End);
+            if (PeekPreviousToken().Type == TokenType.Else)
+                return new Statement.If(condition, thenBlock, ParseBlock(TokenType.End));
+            return new Statement.If(condition, thenBlock, null);
+        }
+
         private Statement ParsePrintStatement()
         {
             var expression = ParseExpression();
             ConsumeToken(TokenType.Semicolon);
             return new Statement.Print(expression);
         }
-        
+
+        private List<Statement> ParseBlock(params TokenType[] until)
+        {
+            var statements = new List<Statement>();
+            // TODO: What if we encounter EOF token?
+            while (!MatchToken(until))
+                statements.Add(ParseStatement());
+            return statements;
+        }
 
         private Expression ParseExpression() => ParseBinaryExpression();
 

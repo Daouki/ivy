@@ -70,6 +70,22 @@ namespace Ivy
                         break;
                     }
                     
+                    case Instruction.CmpLessI64:
+                    {
+                        var left = _stack.Pop();
+                        var right = _stack.Pop();
+                        _stack.Push(left < right ? 1ul : 0);
+                        break;
+                    }
+                    
+                    case Instruction.CmpGreaterI64:
+                    {
+                        var left = _stack.Pop();
+                        var right = _stack.Pop();
+                        _stack.Push(left > right ? 1ul : 0);
+                        break;
+                    }
+                    
                     case Instruction.StoreI64:
                     {
                         var location = GetUInt64FromByteCode();
@@ -82,6 +98,28 @@ namespace Ivy
                     {
                         var location = GetUInt64FromByteCode();
                         _stack.Push(_locals[(int) location]);
+                        break;
+                    }
+
+                    case Instruction.JmpIfZero:
+                    {
+                        var value = _stack.Pop();
+                        if (value == 0)
+                        {
+                            var offset = GetInt64FromByteCode();
+                            _instructionPointer += (int) offset;
+                        }
+                        break;
+                    }
+
+                    case Instruction.JmpIfNotZero:
+                    {
+                        var value = _stack.Pop();
+                        if (value != 0)
+                        {
+                            var offset = GetInt64FromByteCode();
+                            _instructionPointer += (int) offset;
+                        }
                         break;
                     }
 

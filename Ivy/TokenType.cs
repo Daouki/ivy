@@ -8,6 +8,9 @@ namespace Ivy
 
         // Keywords.
         Let,
+        If,
+        Else,
+        End,
         
         // Operators.
         Asterisk,
@@ -15,6 +18,8 @@ namespace Ivy
         Minus,
         Plus,
         Slash,
+        Less,
+        Greater,
 
         Print,
 

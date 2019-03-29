@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Ivy
 {
     public abstract class Statement
@@ -6,6 +8,7 @@ namespace Ivy
         {
             T VisitExpresionStatement(ExpressionStatement statement);
             T VisitLetBinding(LetBinding statement);
+            T VisitIf(If statement);
             T VisitPrint(Print statement);
         }
 
@@ -22,6 +25,23 @@ namespace Ivy
 
             public override T Accept<T>(IVisitor<T> visitor) =>
                 visitor.VisitLetBinding(this);
+        }
+
+        public class If : Statement
+        {
+            public Expression Condition;
+            public List<Statement> ThenBlock;
+            public List<Statement> ElseBlock;
+
+            public If(Expression condition, List<Statement> thenBlock, List<Statement> elseBlock)
+            {
+                Condition = condition;
+                ThenBlock = thenBlock;
+                ElseBlock = elseBlock;
+            }
+            
+            public override T Accept<T>(IVisitor<T> visitor) =>
+                visitor.VisitIf(this);
         }
 
         public class Print : Statement
