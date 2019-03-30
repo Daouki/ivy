@@ -82,6 +82,9 @@ namespace Ivy
             var byteCode = compiler.Compile();
             if (Context.Instance.ErrorsReported > 0)
                 return;
+
+            Disassembler.Disassemble(byteCode.ToArray());
+            Console.WriteLine("----------------------------------------");
             
             var virtualMachine = new VirtualMachine(byteCode);
             virtualMachine.Execute();

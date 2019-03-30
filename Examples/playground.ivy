@@ -1,6 +1,6 @@
 let a = 20 / 4;
 let b = a + 5;
-if b > 20
+if b < 20
     print 1;
 end
 print 0;
