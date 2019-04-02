@@ -101,6 +101,22 @@ namespace Ivy
                         break;
                     }
 
+                    case Instruction.JmpFar:
+                    {
+                        var offset = (int) GetUInt64FromByteCode();
+                        _instructionPointer = offset;
+                        break;
+                    }
+
+                    case Instruction.JmpShort:
+                    {
+                        // If that variable isn't defined here, the code won't work.
+                        // I assume it's something related to wild C#'s optimizations.
+                        var offset = (int) GetInt64FromByteCode();
+                        _instructionPointer += offset;
+                        break;
+                    }
+
                     case Instruction.JmpIfZero:
                     {
                         var value = _stack.Pop();
@@ -108,6 +124,10 @@ namespace Ivy
                         {
                             var offset = GetInt64FromByteCode();
                             _instructionPointer += (int) offset;
+                        }
+                        else
+                        {
+                            _instructionPointer += 8;
                         }
                         break;
                     }
@@ -119,6 +139,10 @@ namespace Ivy
                         {
                             var offset = GetInt64FromByteCode();
                             _instructionPointer += (int) offset;
+                        }
+                        else
+                        {
+                            _instructionPointer += 8;
                         }
                         break;
                     }

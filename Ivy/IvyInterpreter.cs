@@ -68,24 +68,26 @@ namespace Ivy
             var tokens = lexer.ScanTokens();
             if (Context.Instance.ErrorsReported > 0)
                 return;
-            
+
             var parser = new Parser(tokens);
             var ast = parser.Parse();
             if (Context.Instance.ErrorsReported > 0)
                 return;
-            
+
             // We don't need tokens anymore.
             // TODO: Scanning on demand.
             tokens.Clear();
-            
+
             var compiler = new Compiler(ast);
             var byteCode = compiler.Compile();
             if (Context.Instance.ErrorsReported > 0)
                 return;
 
+#if DEBUG
             Disassembler.Disassemble(byteCode.ToArray());
             Console.WriteLine("----------------------------------------");
-            
+#endif
+
             var virtualMachine = new VirtualMachine(byteCode);
             virtualMachine.Execute();
             if (Context.Instance.ErrorsReported > 0)
