@@ -7,7 +7,7 @@ namespace Ivy
     {
         private readonly List<byte> _byteCode;
         
-        private readonly Stack<ulong> _stack = new Stack<ulong>(128);
+        private readonly VMStack _stack = new VMStack(Kibibytes(2));
         private readonly List<ulong> _locals = new List<ulong>(512);
         private int _instructionPointer = 0;
         
@@ -30,66 +30,66 @@ namespace Ivy
                     case Instruction.Push64:
                     {
                         var value = GetUInt64FromByteCode();
-                        _stack.Push(value);
+                        _stack.PushQWord(value);
                         break;
                     }
 
                     case Instruction.Pop64:
-                        _stack.Pop();
+                        _stack.PopQWord();
                         break;
 
                     case Instruction.AddI64:
                     {
-                        var left = _stack.Pop();
-                        var right = _stack.Pop();
-                        _stack.Push(left + right);
+                        var left = _stack.PopQWord();
+                        var right = _stack.PopQWord();
+                        _stack.PushQWord(left + right);
                         break;
                     }
 
                     case Instruction.DivI64:
                     {
-                        var left = _stack.Pop();
-                        var right = _stack.Pop();
-                        _stack.Push(left / right);
+                        var left = _stack.PopQWord();
+                        var right = _stack.PopQWord();
+                        _stack.PushQWord(left / right);
                         break;
                     }
                     
                     case Instruction.MulI64:
                     {
-                        var left = _stack.Pop();
-                        var right = _stack.Pop();
-                        _stack.Push(left * right);
+                        var left = _stack.PopQWord();
+                        var right = _stack.PopQWord();
+                        _stack.PushQWord(left * right);
                         break;
                     }
                     
                     case Instruction.SubI64:
                     {
-                        var left = _stack.Pop();
-                        var right = _stack.Pop();
-                        _stack.Push(left - right);
+                        var left = _stack.PopQWord();
+                        var right = _stack.PopQWord();
+                        _stack.PushQWord(left - right);
                         break;
                     }
                     
                     case Instruction.CmpLessI64:
                     {
-                        var left = _stack.Pop();
-                        var right = _stack.Pop();
-                        _stack.Push(left < right ? 1ul : 0);
+                        var left = _stack.PopQWord();
+                        var right = _stack.PopQWord();
+                        _stack.PushQWord(left < right ? 1ul : 0);
                         break;
                     }
                     
                     case Instruction.CmpGreaterI64:
                     {
-                        var left = _stack.Pop();
-                        var right = _stack.Pop();
-                        _stack.Push(left > right ? 1ul : 0);
+                        var left = _stack.PopQWord();
+                        var right = _stack.PopQWord();
+                        _stack.PushQWord(left > right ? 1ul : 0);
                         break;
                     }
                     
                     case Instruction.StoreI64:
                     {
                         var location = GetUInt64FromByteCode();
-                        var value = _stack.Pop();
+                        var value = _stack.PopQWord();
                         _locals.Add(value);
                         break;
                     }
@@ -97,7 +97,7 @@ namespace Ivy
                     case Instruction.LoadI64:
                     {
                         var location = GetUInt64FromByteCode();
-                        _stack.Push(_locals[(int) location]);
+                        _stack.PushQWord(_locals[(int) location]);
                         break;
                     }
 
@@ -119,7 +119,7 @@ namespace Ivy
 
                     case Instruction.JmpIfZero:
                     {
-                        var value = _stack.Pop();
+                        var value = (int) _stack.PopQWord();
                         if (value == 0)
                         {
                             var offset = GetInt64FromByteCode();
@@ -134,11 +134,11 @@ namespace Ivy
 
                     case Instruction.JmpIfNotZero:
                     {
-                        var value = _stack.Pop();
+                        var value = (int) _stack.PopQWord();
                         if (value != 0)
                         {
-                            var offset = GetInt64FromByteCode();
-                            _instructionPointer += (int) offset;
+                            var offset = (int) GetInt64FromByteCode();
+                            _instructionPointer += offset;
                         }
                         else
                         {
@@ -149,7 +149,7 @@ namespace Ivy
 
                     case Instruction.PrintI64:
                     {
-                        var value = _stack.Pop();
+                        var value = (long) _stack.PopQWord();
                         Console.WriteLine(value);
                         break;
                     }
@@ -175,5 +175,9 @@ namespace Ivy
             _instructionPointer += 8;
             return value;
         }
+
+        private static int Kibibytes(int kibibytes) => kibibytes * 1024;
+        private static int Mebibytes(int mebibytes) => mebibytes * 1024 * 1024;
+        private static int Gibibytes(int gibibytes) => gibibytes * 1024 * 1024 * 1024;
     }
 }

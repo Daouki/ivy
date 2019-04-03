@@ -66,6 +66,7 @@ namespace Ivy
         private Statement ParseIfStatement()
         {
             var condition = ParseExpression();
+            ConsumeToken(TokenType.Colon);
             var thenBlock = ParseBlock(TokenType.Else, TokenType.End);
             if (PeekPreviousToken().Type == TokenType.Else)
                 return new Statement.If(condition, thenBlock, ParseBlock(TokenType.End));
@@ -159,7 +160,8 @@ namespace Ivy
         private Token ConsumeToken(params TokenType[] types)
         {
             if (!MatchToken(types))
-                throw new ParseException("TODO: ConsumeToken: token type not matched");
+                throw new ParseException($"Expected token type: [{string.Join(", ", types)}]",
+                    PeekCurrentToken());
             return PeekPreviousToken();
         }
 

@@ -96,6 +96,10 @@ namespace Ivy
                     PushToken(TokenType.Greater);
                     break;
                 
+                case ':':
+                    PushToken(TokenType.Colon);
+                    break;
+                
                 case ';':
                     PushToken(TokenType.Semicolon);
                     break;

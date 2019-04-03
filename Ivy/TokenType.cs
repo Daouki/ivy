@@ -21,9 +21,10 @@ namespace Ivy
         Less,
         Greater,
 
-        Print,
-
+        Colon,
         Semicolon,
+
+        Print,
 
         Unknown,
         EndOfFile
