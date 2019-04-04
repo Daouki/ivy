@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Ivy.Frontend;
 
-namespace Ivy
+namespace Ivy.Backend
 {
     using ByteCodeChunk = List<byte>;
 

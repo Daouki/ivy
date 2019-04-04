@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Ivy
+namespace Ivy.Frontend
 {
     public class Parser
     {

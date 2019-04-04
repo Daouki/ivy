@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Ivy
+namespace Ivy.Frontend
 {
     public class ParseException : Exception
     {

@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
 
-namespace Ivy
+namespace Ivy.Frontend
 {
     public class Lexer
     {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Ivy
+namespace Ivy.Frontend
 {
     public abstract class Statement
     {

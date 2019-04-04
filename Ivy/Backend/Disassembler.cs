@@ -1,6 +1,6 @@
 using System;
 
-namespace Ivy
+namespace Ivy.Backend
 {
     public class Disassembler
     {

@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Ivy.Backend;
 
-namespace Ivy
+namespace Ivy.Runtime
 {
     public class VirtualMachine
     {

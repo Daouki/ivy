@@ -1,6 +1,4 @@
-using System.Security.Cryptography.X509Certificates;
-
-namespace Ivy
+namespace Ivy.Frontend
 {
     // I'm really waiting for C#8's record types...
     public class Token

@@ -1,4 +1,4 @@
-namespace Ivy
+namespace Ivy.Frontend
 {
     public abstract class Expression
     {
