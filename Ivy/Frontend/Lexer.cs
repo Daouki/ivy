@@ -8,11 +8,12 @@ namespace Ivy.Frontend
         private static readonly Dictionary<string, TokenType> _keywords =
             new Dictionary<string, TokenType>
             {
-                {"let", TokenType.Let},
-                {"if", TokenType.If},
                 {"else", TokenType.Else},
                 {"end", TokenType.End},
+                {"if", TokenType.If},
+                {"let", TokenType.Let},
                 {"print", TokenType.Print},
+                {"while", TokenType.While},
             };
 
         private readonly string _sourceCode;

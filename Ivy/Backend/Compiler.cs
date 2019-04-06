@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Ivy.Frontend;
 
 namespace Ivy.Backend
@@ -76,6 +77,18 @@ namespace Ivy.Backend
             var elseBlock = VisitBlock(statement.ElseBlock);
             chunk.AddInstruction(Instruction.JmpShort, elseBlock.Count);
             chunk.AddRange(elseBlock);
+            return chunk;
+        }
+
+        public ByteCodeChunk VisitWhile(Statement.While statement)
+        {
+            var chunk = new ByteCodeChunk();
+            chunk.AddRange(VisitExpression(statement.Condition));
+            var body = VisitBlock(statement.Body);
+            chunk.AddInstruction(Instruction.JmpIfFalse, body.Count);
+            chunk.AddRange(body);
+            // 8 is the size of the JMPSHORT instruction argument.
+            chunk.AddInstruction(Instruction.JmpShort, -chunk.Count + 8);
             return chunk;
         }
 

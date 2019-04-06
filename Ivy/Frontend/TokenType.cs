@@ -7,10 +7,12 @@ namespace Ivy.Frontend
         Integer,
 
         // Keywords.
-        Let,
-        If,
         Else,
         End,
+        If,
+        Let,
+        Print,
+        While,
         
         // Operators.
         Asterisk,
@@ -23,8 +25,6 @@ namespace Ivy.Frontend
 
         Colon,
         Semicolon,
-
-        Print,
 
         Unknown,
         EndOfFile

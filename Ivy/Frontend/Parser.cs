@@ -50,6 +50,8 @@ namespace Ivy.Frontend
                 return ParseIfStatement();
             if (MatchToken(TokenType.Print))
                 return ParsePrintStatement();
+            if (MatchToken(TokenType.While))
+                return ParseWhile();
                 
             var expression = ParseExpression();
             if (MatchToken(TokenType.Equal))
@@ -75,6 +77,14 @@ namespace Ivy.Frontend
             if (PeekPreviousToken().Type == TokenType.Else)
                 return new Statement.If(condition, thenBlock, ParseBlock(TokenType.End));
             return new Statement.If(condition, thenBlock, null);
+        }
+
+        private Statement ParseWhile()
+        {
+            var condition = ParseExpression();
+            ConsumeToken(TokenType.Colon);
+            var body = ParseBlock(TokenType.End);
+            return new Statement.While(condition, body);
         }
 
         private Statement ParsePrintStatement()

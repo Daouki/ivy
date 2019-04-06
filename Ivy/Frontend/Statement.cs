@@ -8,6 +8,7 @@ namespace Ivy.Frontend
         {
             T VisitLetBinding(LetBinding statement);
             T VisitIf(If statement);
+            T VisitWhile(While statement);
             T VisitPrint(Print statement);
             T VisitAssignment(Assignment statement);
             T VisitExpresionStatement(ExpressionStatement statement);
@@ -43,6 +44,20 @@ namespace Ivy.Frontend
             
             public override T Accept<T>(IVisitor<T> visitor) =>
                 visitor.VisitIf(this);
+        }
+
+        public class While : Statement
+        {
+            public Expression Condition;
+            public List<Statement> Body;
+
+            public While(Expression condition, List<Statement> body)
+            {
+                Condition = condition;
+                Body = body;
+            }
+            
+            public override T Accept<T>(IVisitor<T> visitor) => visitor.VisitWhile(this);
         }
 
         public class Print : Statement
