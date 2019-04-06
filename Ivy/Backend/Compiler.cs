@@ -87,7 +87,7 @@ namespace Ivy.Backend
             var body = VisitBlock(statement.Body);
             chunk.AddInstruction(
                 statement.IsUntilLoop ? Instruction.JmpIfTrue : Instruction.JmpIfFalse,
-                body.Count + 9);
+                body.Count + 9);    // 9 is the size of the final JmpShort instruction.
             chunk.AddRange(body);
             chunk.AddInstruction(Instruction.JmpShort, -(chunk.Count + 9));
             return chunk;

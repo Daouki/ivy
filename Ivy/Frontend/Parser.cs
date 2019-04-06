@@ -10,8 +10,10 @@ namespace Ivy.Frontend
             {
                 {TokenType.Less, 10},
                 {TokenType.Greater, 10},
-                {TokenType.Minus, 20},
-                {TokenType.Plus, 20},
+                {TokenType.LessLess, 20},
+                {TokenType.GreaterGreater, 20},
+                {TokenType.Minus, 30},
+                {TokenType.Plus, 30},
                 {TokenType.Asterisk, 40},
                 {TokenType.Slash, 40},
             };

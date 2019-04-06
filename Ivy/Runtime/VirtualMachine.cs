@@ -87,6 +87,22 @@ namespace Ivy.Runtime
                         break;
                     }
                     
+                    case Instruction.ShiftLeft64:
+                    {
+                        var left = _stack.PopQWord();
+                        var right = (int)_stack.PopQWord();
+                        _stack.PushQWord(left << right);
+                        break;
+                    }
+                    
+                    case Instruction.ShiftRight64:
+                    {
+                        var left = _stack.PopQWord();
+                        var right = (int)_stack.PopQWord();
+                        _stack.PushQWord(left >> right);
+                        break;
+                    }
+                    
                     case Instruction.StoreI64:
                     {
                         var location = (int) GetUInt64FromByteCode();

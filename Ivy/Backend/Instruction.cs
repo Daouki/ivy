@@ -15,6 +15,9 @@ namespace Ivy.Backend
         CmpLessI64,
         CmpGreaterI64,
         
+        ShiftLeft64,
+        ShiftRight64,
+        
         StoreI64,
         LoadI64,
         

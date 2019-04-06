@@ -17,6 +17,27 @@ namespace Ivy.Frontend
                 {"while", TokenType.While},
             };
 
+        private static readonly Dictionary<string, TokenType> _twoCharsOperators =
+            new Dictionary<string, TokenType>
+            {
+                {"<<", TokenType.LessLess},
+                {">>", TokenType.GreaterGreater},
+            };
+        
+        private static readonly Dictionary<string, TokenType> _singleCharOperators =
+            new Dictionary<string, TokenType>
+            {
+                {"*", TokenType.Asterisk},
+                {":", TokenType.Colon},
+                {"=", TokenType.Equal},
+                {"-", TokenType.Minus},
+                {";", TokenType.Semicolon},
+                {"/", TokenType.Slash},
+                {"+", TokenType.Plus},
+                {"<", TokenType.Less},
+                {">", TokenType.Greater},
+            };
+
         private readonly string _sourceCode;
         private readonly List<Token> _tokens = new List<Token>();
                
@@ -25,22 +46,24 @@ namespace Ivy.Frontend
         private int _line = 1;
         private int _lastNewLine = 0;
 
-        public Lexer(string sourceCode)
+        private Lexer(string sourceCode)
         {
             _sourceCode = sourceCode;
         }
 
-        public List<Token> ScanTokens()
+        public static List<Token> ScanTokens(string sourceCode)
         {
-            while (!IsAtEnd())
+            var lexer = new Lexer(sourceCode);
+            
+            while (!lexer.IsAtEnd())
             {
-                _start = _current;
-                ScanToken();
+                lexer._start = lexer._current;
+                lexer.ScanToken();
             }
 
-            _start = _current;
-            PushToken(TokenType.EndOfFile);
-            return _tokens;
+            lexer._start = lexer._current;
+            lexer.PushToken(TokenType.EndOfFile);
+            return lexer._tokens;
         }
 
         private void ScanToken()
@@ -66,49 +89,22 @@ namespace Ivy.Frontend
 
         private void ScanOperator()
         {
-            var c = PeekCurrentCharacter();
-            switch (c)
+            try
             {
-                case '*':
-                    PushToken(TokenType.Asterisk);
-                    break;
-                
-                case '=':
-                    PushToken(TokenType.Equal);
-                    break;
-                
-                case '-':
-                    PushToken(TokenType.Minus);
-                    break;
-                
-                case '+':
-                    PushToken(TokenType.Plus);
-                    break;
-                
-                case '/':
-                    PushToken(TokenType.Slash);
-                    break;
-                
-                case '<':
-                    PushToken(TokenType.Less);
-                    break;
-                
-                case '>':
-                    PushToken(TokenType.Greater);
-                    break;
-                
-                case ':':
-                    PushToken(TokenType.Colon);
-                    break;
-                
-                case ';':
-                    PushToken(TokenType.Semicolon);
-                    break;
-                
-                default:
-                    PushToken(TokenType.Unknown);
-                    break;
+                var twoCharOperator = _sourceCode.Substring(_start, 2);
+                if (_twoCharsOperators.TryGetValue(twoCharOperator, out var twoCharsOperator))
+                {
+                    PushToken(twoCharsOperator);
+                }
             }
+            catch (IndexOutOfRangeException)
+            {
+            }
+
+            var c = PeekCurrentCharacter();
+            PushToken(_singleCharOperators.TryGetValue(c.ToString(), out var operatorTokenType)
+                ? operatorTokenType
+                : TokenType.Unknown);
         }
         
         private void ScanNumber()
@@ -142,8 +138,9 @@ namespace Ivy.Frontend
                     literal = long.Parse(lexeme);
                     break;
             }
-            
-            _tokens.Add(new Token(type, lexeme, literal, "", _line, _current - _lastNewLine + 1, _start, length));
+
+            _tokens.Add(new Token(type, lexeme, literal, "", _line, _current - _lastNewLine, _start,
+                length));
         }
 
         private bool IsAtEnd() => _current >= _sourceCode.Length;

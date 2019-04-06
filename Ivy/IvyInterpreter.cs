@@ -67,8 +67,7 @@ namespace Ivy
 
         private static void RunCode(string sourceCode)
         {
-            var lexer = new Lexer(sourceCode);
-            var tokens = lexer.ScanTokens();
+            var tokens = Lexer.ScanTokens(sourceCode);
             if (Context.Instance.ErrorsReported > 0)
                 return;
 

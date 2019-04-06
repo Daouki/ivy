@@ -23,6 +23,9 @@ namespace Ivy.Frontend
         Slash,
         Less,
         Greater,
+        
+        LessLess,
+        GreaterGreater,
 
         Colon,
         Semicolon,
