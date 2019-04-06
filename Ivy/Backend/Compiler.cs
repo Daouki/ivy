@@ -85,10 +85,9 @@ namespace Ivy.Backend
             var chunk = new ByteCodeChunk();
             chunk.AddRange(VisitExpression(statement.Condition));
             var body = VisitBlock(statement.Body);
-            chunk.AddInstruction(Instruction.JmpIfFalse, body.Count);
+            chunk.AddInstruction(Instruction.JmpIfFalse, body.Count + 9);
             chunk.AddRange(body);
-            // 8 is the size of the JMPSHORT instruction argument.
-            chunk.AddInstruction(Instruction.JmpShort, -chunk.Count + 8);
+            chunk.AddInstruction(Instruction.JmpShort, -(chunk.Count + 9));
             return chunk;
         }
 
