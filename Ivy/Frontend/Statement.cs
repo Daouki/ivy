@@ -50,11 +50,13 @@ namespace Ivy.Frontend
         {
             public Expression Condition;
             public List<Statement> Body;
+            public bool IsUntilLoop;
 
-            public While(Expression condition, List<Statement> body)
+            public While(Expression condition, List<Statement> body, bool isUntilLoop)
             {
                 Condition = condition;
                 Body = body;
+                IsUntilLoop = isUntilLoop;
             }
             
             public override T Accept<T>(IVisitor<T> visitor) => visitor.VisitWhile(this);

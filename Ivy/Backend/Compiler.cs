@@ -85,7 +85,9 @@ namespace Ivy.Backend
             var chunk = new ByteCodeChunk();
             chunk.AddRange(VisitExpression(statement.Condition));
             var body = VisitBlock(statement.Body);
-            chunk.AddInstruction(Instruction.JmpIfFalse, body.Count + 9);
+            chunk.AddInstruction(
+                statement.IsUntilLoop ? Instruction.JmpIfTrue : Instruction.JmpIfFalse,
+                body.Count + 9);
             chunk.AddRange(body);
             chunk.AddInstruction(Instruction.JmpShort, -(chunk.Count + 9));
             return chunk;

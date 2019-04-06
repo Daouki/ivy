@@ -48,10 +48,12 @@ namespace Ivy.Frontend
                 return ParseLetBinding();
             if (MatchToken(TokenType.If))
                 return ParseIfStatement();
+            if (MatchToken(TokenType.Until))
+                return ParseWhile(true);
             if (MatchToken(TokenType.Print))
                 return ParsePrintStatement();
             if (MatchToken(TokenType.While))
-                return ParseWhile();
+                return ParseWhile(false);
                 
             var expression = ParseExpression();
             if (MatchToken(TokenType.Equal))
@@ -79,12 +81,12 @@ namespace Ivy.Frontend
             return new Statement.If(condition, thenBlock, null);
         }
 
-        private Statement ParseWhile()
+        private Statement ParseWhile(bool isUntilLoop)
         {
             var condition = ParseExpression();
             ConsumeToken(TokenType.Colon);
             var body = ParseBlock(TokenType.End);
-            return new Statement.While(condition, body);
+            return new Statement.While(condition, body, isUntilLoop);
         }
 
         private Statement ParsePrintStatement()

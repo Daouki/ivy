@@ -12,6 +12,7 @@ namespace Ivy.Frontend
                 {"end", TokenType.End},
                 {"if", TokenType.If},
                 {"let", TokenType.Let},
+                {"until", TokenType.Until},
                 {"print", TokenType.Print},
                 {"while", TokenType.While},
             };
