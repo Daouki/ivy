@@ -51,13 +51,17 @@ namespace Ivy.Frontend
             if (MatchToken(TokenType.Print))
                 return ParsePrintStatement();
                 
-            return new Statement.ExpressionStatement(ParseExpression());
+            var expression = ParseExpression();
+            if (MatchToken(TokenType.Equal))
+                return ParseAssignment(expression);
+            ConsumeToken(TokenType.Semicolon);
+            return new Statement.ExpressionStatement(expression);
         }
 
         private Statement ParseLetBinding()
         {
             var identifier = ConsumeToken(TokenType.Identifier);
-            ConsumeToken(TokenType.Equals);
+            ConsumeToken(TokenType.Equal);
             var initializer = ParseExpression();
             ConsumeToken(TokenType.Semicolon);
             return new Statement.LetBinding(identifier, initializer);
@@ -78,6 +82,13 @@ namespace Ivy.Frontend
             var expression = ParseExpression();
             ConsumeToken(TokenType.Semicolon);
             return new Statement.Print(expression);
+        }
+
+        private Statement ParseAssignment(Expression target)
+        {
+            var value = ParseExpression();
+            ConsumeToken(TokenType.Semicolon);
+            return new Statement.Assignment(target, value);
         }
 
         private List<Statement> ParseBlock(params TokenType[] until)

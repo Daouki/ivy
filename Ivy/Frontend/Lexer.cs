@@ -72,7 +72,7 @@ namespace Ivy.Frontend
                     break;
                 
                 case '=':
-                    PushToken(TokenType.Equals);
+                    PushToken(TokenType.Equal);
                     break;
                 
                 case '-':

@@ -95,6 +95,29 @@ namespace Ivy.Backend
             return chunk;
         }
 
+        public ByteCodeChunk VisitAssignment(Statement.Assignment statement)
+        {
+            var chunk = new ByteCodeChunk();
+            if (statement.Target is Expression.AtomReference atom)
+            {
+                var localIndex = _locals[0].IndexOf(atom.Identifier.Lexeme);
+                if (localIndex >= 0)
+                {
+                    chunk.AddRange(VisitExpression(statement.Value));
+                    chunk.AddInstruction(Instruction.StoreI64, (ulong) localIndex);
+                }
+                else
+                {
+                    // TODO: Report an error!
+                }
+            }
+            else
+            {
+                // TODO: Report an error!
+            }
+            return chunk;
+        }
+
         private ByteCodeChunk StoreLocal(Token identifier)
         {
             var chunk = new ByteCodeChunk(9);

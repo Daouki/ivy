@@ -6,10 +6,11 @@ namespace Ivy.Frontend
     {
         public interface IVisitor<out T>
         {
-            T VisitExpresionStatement(ExpressionStatement statement);
             T VisitLetBinding(LetBinding statement);
             T VisitIf(If statement);
             T VisitPrint(Print statement);
+            T VisitAssignment(Assignment statement);
+            T VisitExpresionStatement(ExpressionStatement statement);
         }
 
         public class LetBinding : Statement
@@ -55,6 +56,21 @@ namespace Ivy.Frontend
 
             public override T Accept<T>(IVisitor<T> visitor) =>
                 visitor.VisitPrint(this);
+        }
+
+        public class Assignment : Statement
+        {
+            public Expression Target;
+            public Expression Value;
+
+            public Assignment(Expression target, Expression value)
+            {
+                Target = target;
+                Value = value;
+            }
+
+            public override T Accept<T>(IVisitor<T> visitor) =>
+                visitor.VisitAssignment(this);
         }
 
         public class ExpressionStatement : Statement

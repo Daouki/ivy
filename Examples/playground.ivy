@@ -1,6 +1,3 @@
-if 5 < 20:
-    print 1;
-else
-    print 0;
-end
-print 99;
+let a = 1;
+a = 2;
+print a;

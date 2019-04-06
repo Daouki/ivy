@@ -14,7 +14,7 @@ namespace Ivy.Frontend
         
         // Operators.
         Asterisk,
-        Equals,
+        Equal,
         Minus,
         Plus,
         Slash,

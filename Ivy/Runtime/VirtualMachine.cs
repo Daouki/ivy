@@ -89,9 +89,12 @@ namespace Ivy.Runtime
                     
                     case Instruction.StoreI64:
                     {
-                        var location = GetUInt64FromByteCode();
+                        var location = (int) GetUInt64FromByteCode();
                         var value = _stack.PopQWord();
-                        _locals.Add(value);
+                        if (location < _locals.Count)
+                            _locals[location] = value;
+                        else
+                            _locals.Add(value);
                         break;
                     }
 
