@@ -39,7 +39,7 @@ namespace Ivy.Runtime
                         _stack.Pop();
                         break;
 
-                    case Instruction.AddI64:
+                    case Instruction.AddI:
                     {
                         var left = _stack.Pop();
                         var right = _stack.Pop();
@@ -47,7 +47,7 @@ namespace Ivy.Runtime
                         break;
                     }
 
-                    case Instruction.DivI64:
+                    case Instruction.DivI:
                     {
                         var left = _stack.Pop();
                         var right = _stack.Pop();
@@ -55,7 +55,7 @@ namespace Ivy.Runtime
                         break;
                     }
                     
-                    case Instruction.MulI64:
+                    case Instruction.MulI:
                     {
                         var left = _stack.Pop();
                         var right = _stack.Pop();
@@ -63,7 +63,7 @@ namespace Ivy.Runtime
                         break;
                     }
                     
-                    case Instruction.SubI64:
+                    case Instruction.SubI:
                     {
                         var left = _stack.Pop();
                         var right = _stack.Pop();
@@ -71,7 +71,7 @@ namespace Ivy.Runtime
                         break;
                     }
                     
-                    case Instruction.CmpLessI64:
+                    case Instruction.CmpLessI:
                     {
                         var left = _stack.Pop();
                         var right = _stack.Pop();
@@ -79,7 +79,7 @@ namespace Ivy.Runtime
                         break;
                     }
                     
-                    case Instruction.CmpGreaterI64:
+                    case Instruction.CmpGreaterI:
                     {
                         var left = _stack.Pop();
                         var right = _stack.Pop();
@@ -87,7 +87,7 @@ namespace Ivy.Runtime
                         break;
                     }
                     
-                    case Instruction.ShiftLeft64:
+                    case Instruction.ShiftLeft:
                     {
                         var left = _stack.Pop();
                         var right = (int)_stack.Pop();
@@ -95,7 +95,7 @@ namespace Ivy.Runtime
                         break;
                     }
                     
-                    case Instruction.ShiftRight64:
+                    case Instruction.ShiftRight:
                     {
                         var left = _stack.Pop();
                         var right = (int)_stack.Pop();
@@ -103,7 +103,7 @@ namespace Ivy.Runtime
                         break;
                     }
                     
-                    case Instruction.StoreI64:
+                    case Instruction.Store:
                     {
                         var location = (int) GetUInt64FromByteCode();
                         var value = _stack.Pop();
@@ -114,7 +114,7 @@ namespace Ivy.Runtime
                         break;
                     }
 
-                    case Instruction.LoadI64:
+                    case Instruction.Load:
                     {
                         var location = GetUInt64FromByteCode();
                         _stack.Push(_locals[(int) location]);

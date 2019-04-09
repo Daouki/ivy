@@ -28,43 +28,43 @@ namespace Ivy.Backend
                         pointer += 9;
                         break;
                     
-                    case Instruction.AddI64:
+                    case Instruction.AddI:
                         Console.WriteLine("ADD64");
                         pointer += 1;
                         break;
                     
-                    case Instruction.DivI64:
+                    case Instruction.DivI:
                         Console.WriteLine("DIV64");
                         pointer += 1;
                         break;
                     
-                    case Instruction.MulI64:
+                    case Instruction.MulI:
                         Console.WriteLine("MUL64");
                         pointer += 1;
                         break;
                     
-                    case Instruction.SubI64:
+                    case Instruction.SubI:
                         Console.WriteLine("SUB64");
                         pointer += 1;
                         break;
                     
-                    case Instruction.CmpLessI64:
+                    case Instruction.CmpLessI:
                         Console.WriteLine("CMPL64");
                         pointer += 1;
                         break;
                     
-                    case Instruction.CmpGreaterI64:
+                    case Instruction.CmpGreaterI:
                         Console.WriteLine("CMPG64");
                         pointer += 1;
                         break;
                     
-                    case Instruction.StoreI64:
+                    case Instruction.Store:
                         Console.Write("STORE64\t");
                         Console.WriteLine(BitConverter.ToInt64(GetSubarray(byteCode, pointer + 1, 8)));
                         pointer += 9;
                         break;
                     
-                    case Instruction.LoadI64:
+                    case Instruction.Load:
                         Console.Write("LOAD64\t");
                         Console.WriteLine(BitConverter.ToInt64(GetSubarray(byteCode, pointer + 1, 8)));
                         pointer += 9;

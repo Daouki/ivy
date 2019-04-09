@@ -118,7 +118,7 @@ namespace Ivy.Backend
                 if (localIndex >= 0)
                 {
                     chunk.AddRange(VisitExpression(statement.Value));
-                    chunk.AddInstruction(Instruction.StoreI64, (ulong) localIndex);
+                    chunk.AddInstruction(Instruction.Store, (ulong) localIndex);
                 }
                 else
                 {
@@ -135,7 +135,7 @@ namespace Ivy.Backend
         private ByteCodeChunk StoreLocal(Token identifier)
         {
             var chunk = new ByteCodeChunk(9);
-            chunk.AddInstruction(Instruction.StoreI64, (ulong) _locals[0].Count);
+            chunk.AddInstruction(Instruction.Store, (ulong) _locals[0].Count);
             _locals[0].Add(identifier.Lexeme);
             return chunk;
         }
@@ -159,27 +159,27 @@ namespace Ivy.Backend
             switch (expression.Operator.Type)
             {
                 case TokenType.Asterisk:
-                    chunk.AddInstruction(Instruction.MulI64);
+                    chunk.AddInstruction(Instruction.MulI);
                     break;
                 
                 case TokenType.Minus:
-                    chunk.AddInstruction(Instruction.SubI64);
+                    chunk.AddInstruction(Instruction.SubI);
                     break;
                 
                 case TokenType.Plus:
-                    chunk.AddInstruction(Instruction.AddI64);
+                    chunk.AddInstruction(Instruction.AddI);
                     break;
                 
                 case TokenType.Slash:
-                    chunk.AddInstruction(Instruction.DivI64);
+                    chunk.AddInstruction(Instruction.DivI);
                     break;
                 
                 case TokenType.Less:
-                    chunk.AddInstruction(Instruction.CmpLessI64);
+                    chunk.AddInstruction(Instruction.CmpLessI);
                     break;
                 
                 case TokenType.Greater:
-                    chunk.AddInstruction(Instruction.CmpGreaterI64);
+                    chunk.AddInstruction(Instruction.CmpGreaterI);
                     break;
                 
                 default:
@@ -217,7 +217,7 @@ namespace Ivy.Backend
             var localIndex = _locals[0].FindIndex((local) => local == identifier.Lexeme); 
             if (localIndex > -1)
             {
-                chunk.AddInstruction(Instruction.LoadI64, (ulong) localIndex);
+                chunk.AddInstruction(Instruction.Load, (ulong) localIndex);
             }
             else
             {

@@ -7,19 +7,19 @@ namespace Ivy.Backend
         Push64,
         Pop64,
         
-        AddI64,
-        DivI64,          
-        MulI64,
-        SubI64,
+        AddI,
+        DivI,          
+        MulI,
+        SubI,
 
-        CmpLessI64,
-        CmpGreaterI64,
+        CmpLessI,
+        CmpGreaterI,
         
-        ShiftLeft64,
-        ShiftRight64,
+        ShiftLeft,
+        ShiftRight,
         
-        StoreI64,
-        LoadI64,
+        Store,
+        Load,
         
         // Unconditional jumps.
         JmpShort,
