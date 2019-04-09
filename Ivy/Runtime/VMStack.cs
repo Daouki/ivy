@@ -6,8 +6,9 @@ namespace Ivy.Runtime
 {
     public class VMStack
     {
-        private List<ulong> _stack;
-        private int _stackPointer = 0;
+        public int StackPointer { get; private set; } = 0;
+
+        private readonly List<ulong> _stack;
         
         public VMStack(int size)
         {
@@ -17,16 +18,16 @@ namespace Ivy.Runtime
 
         public void Push(ulong value)
         {
-            _stack.Add(value);
-            _stackPointer += 1;
+            _stack[StackPointer] = value;
+            StackPointer += 1;
         }
 
         public ulong Pop()
         {
             try
             {
-                var value = _stack[_stack.Count - 1];
-                _stack.RemoveAt(_stack.Count - 1);
+                var value = _stack[StackPointer - 1];
+                StackPointer -= 1;
                 return value;
             }
             catch (ArgumentOutOfRangeException)

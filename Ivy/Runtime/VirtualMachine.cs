@@ -9,7 +9,6 @@ namespace Ivy.Runtime
         private readonly List<byte> _byteCode;
         
         private readonly VMStack _stack = new VMStack(Kibibytes(2));
-        private readonly List<ulong> _locals = new List<ulong>(512);
         private int _instructionPointer = 0;
         
         public VirtualMachine(List<byte> byteCode)
@@ -106,18 +105,18 @@ namespace Ivy.Runtime
                     case Instruction.Store:
                     {
                         var location = (int) GetUInt64FromByteCode();
-                        var value = _stack.Pop();
-                        if (location < _locals.Count)
-                            _locals[location] = value;
-                        else
-                            _locals.Add(value);
+                        if (location != _stack.StackPointer - 1)
+                        {
+                            var value = _stack.Pop();
+                            _stack.Set(location, value);
+                        }
                         break;
                     }
 
                     case Instruction.Load:
                     {
-                        var location = GetUInt64FromByteCode();
-                        _stack.Push(_locals[(int) location]);
+                        var location = (int) GetUInt64FromByteCode();
+                        _stack.Push(_stack.Get(location));
                         break;
                     }
 
