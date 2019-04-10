@@ -20,13 +20,18 @@ namespace Ivy.Frontend
         
         private readonly List<Token> _tokens;
         private int _current;
+        
+        public static List<Statement> Parse(List<Token> tokens)
+        {
+            return new Parser(tokens).Parse();
+        }
 
-        public Parser(List<Token> tokens)
+        private Parser(List<Token> tokens)
         {
             _tokens = tokens;
         }
         
-        public List<Statement> Parse()
+        private List<Statement> Parse()
         {
             var ast = new List<Statement>();
             try

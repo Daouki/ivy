@@ -37,18 +37,19 @@ namespace Ivy.Backend
         private readonly List<Statement> _ast;
 
         private readonly List<List<string>> _locals = new List<List<string>>(32);
-        
-        public Compiler(List<Statement> ast)
+
+        private Compiler(List<Statement> ast)
         {
             _ast = ast;
             _locals.Add(new List<string>(512));
         }
 
-        public List<byte> Compile()
+        public static List<byte> Compile(List<Statement> ast)
         {
+            var compiler = new Compiler(ast);
             var byteCode = new ByteCodeChunk();
-            foreach (var statement in _ast)
-                byteCode.AddRange(VisitStatement(statement));
+            foreach (var statement in compiler._ast)
+                byteCode.AddRange(compiler.VisitStatement(statement));
             return byteCode;
         }
 

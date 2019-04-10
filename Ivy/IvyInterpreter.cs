@@ -31,15 +31,15 @@ namespace Ivy
     
         private static void Main(string[] args)
         {
-            if (args.Length > 1)
+            if (args.Length == 1)
+            {
+                RunFile(args[0]);
+            }
+            else
             {
                 Console.WriteLine("Usage: ivy [script.ivy]");
                 Environment.Exit(1);
             }
-            else if (args.Length == 1)
-                RunFile(args[0]);
-            else
-                RunREPL();
         }
 
         private static void RunFile(string filePath)
@@ -56,32 +56,20 @@ namespace Ivy
             }
         }
 
-        private static void RunREPL()
-        {
-            while (true)
-            {
-                Console.Write("> ");
-                RunCode(Console.ReadLine());
-            }
-        }
-
         private static void RunCode(string sourceCode)
         {
             var tokens = Lexer.ScanTokens(sourceCode);
             if (Context.Instance.ErrorsReported > 0)
                 return;
 
-            var parser = new Parser(tokens);
-            var ast = parser.Parse();
+            var ast = Parser.Parse(tokens);
             if (Context.Instance.ErrorsReported > 0)
                 return;
 
-            // We don't need tokens anymore.
             // TODO: Scanning on demand.
             tokens.Clear();
 
-            var compiler = new Compiler(ast);
-            var byteCode = compiler.Compile();
+            var byteCode = Compiler.Compile(ast);
             if (Context.Instance.ErrorsReported > 0)
                 return;
 
@@ -90,10 +78,7 @@ namespace Ivy
             Console.WriteLine("----------------------------------------");
 #endif
 
-            var virtualMachine = new VirtualMachine(byteCode);
-            virtualMachine.Execute();
-            if (Context.Instance.ErrorsReported > 0)
-                return;
+            VirtualMachine.Execute(byteCode);
         }
     }
 }

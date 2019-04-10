@@ -10,13 +10,18 @@ namespace Ivy.Runtime
         
         private readonly VMStack _stack = new VMStack(Kibibytes(2));
         private int _instructionPointer = 0;
+
+        public static void Execute(List<byte> byteCode)
+        {
+            new VirtualMachine(byteCode).Execute();
+        }
         
-        public VirtualMachine(List<byte> byteCode)
+        private VirtualMachine(List<byte> byteCode)
         {
             _byteCode = byteCode;
         }
 
-        public void Execute()
+        private void Execute()
         {
             var codeLength = _byteCode.Count;
             while (_instructionPointer < codeLength)
