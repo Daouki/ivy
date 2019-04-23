@@ -123,12 +123,14 @@ namespace Ivy.Backend
                 }
                 else
                 {
-                    // TODO: Report an error!
+                    IvyInterpreter.ReportError(statement.Target.Span,
+                        "The assignment target wasn't declared in this scope.");
                 }
             }
             else
             {
-                // TODO: Report an error!
+                IvyInterpreter.ReportError(statement.Target.Span,
+                    "The expression isn't a valid assignment target.");
             }
             return chunk;
         }
@@ -222,8 +224,8 @@ namespace Ivy.Backend
             }
             else
             {
-                IvyInterpreter.Context.Instance.ReportError(identifier.FilePath, identifier.Line,
-                    identifier.Column, "Identifier was not defined in the current scope");
+                IvyInterpreter.Context.Instance.ReportError(identifier.Span,
+                    "Identifier was not defined in the current scope");
             }
             return chunk;
         }

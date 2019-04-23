@@ -3,6 +3,7 @@ using System.IO;
 using Ivy.Backend;
 using Ivy.Frontend;
 using Ivy.Runtime;
+using Ivy.Utils;
 
 namespace Ivy
 {
@@ -14,9 +15,9 @@ namespace Ivy
 
             public int ErrorsReported { get; private set; }
 
-            public void ReportError(string filePath, int line, int column, string message)
+            public void ReportError(SourceCodeSpan span, string message)
             {
-                Console.WriteLine($"{filePath}:{line}:{column}: error: {message}");
+                Console.WriteLine($"{span.File.Path}:{span.Line}:{span.Column}: error: {message}");
                 ErrorsReported++;
             }
             
@@ -27,6 +28,11 @@ namespace Ivy
             private Context()
             {
             }
+        }
+
+        public static void ReportError(SourceCodeSpan span, string message)
+        {
+            Context.Instance.ReportError(span, message);
         }
     
         private static void Main(string[] args)
@@ -47,7 +53,7 @@ namespace Ivy
             try
             {
                 var sourceCode = File.ReadAllText(filePath);
-                var reportedErrors = RunCode(filePath, sourceCode);
+                var reportedErrors = RunCode(new SourceCodeFile(filePath, sourceCode));
             }
             catch (IOException e)
             {
@@ -56,9 +62,9 @@ namespace Ivy
             }
         }
 
-        private static bool RunCode(string filePath, string sourceCode)
+        private static bool RunCode(SourceCodeFile file)
         {
-            var tokens = Lexer.ScanTokens(filePath, sourceCode);
+            var tokens = Lexer.ScanTokens(file);
             if (Context.Instance.ErrorsReported > 0)
                 return true;
 

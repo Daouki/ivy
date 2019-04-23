@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Ivy.Utils;
 
 namespace Ivy.Frontend
 {
@@ -38,8 +39,7 @@ namespace Ivy.Frontend
                 {">", TokenType.Greater},
             };
 
-        private readonly string _filePath;
-        private readonly string _sourceCode;
+        private readonly SourceCodeFile _file;
         private readonly List<Token> _tokens = new List<Token>();
 
         private int _start = 0;
@@ -47,15 +47,14 @@ namespace Ivy.Frontend
         private int _line = 1;
         private int _lastNewLine = 0;
 
-        private Lexer(string filePath, string sourceCode)
+        private Lexer(SourceCodeFile file)
         {
-            _filePath = filePath;
-            _sourceCode = sourceCode;
+            _file = file;
         }
 
-        public static List<Token> ScanTokens(string filePath, string sourceCode)
+        public static List<Token> ScanTokens(SourceCodeFile file)
         {
-            var lexer = new Lexer(filePath, sourceCode);
+            var lexer = new Lexer(file);
             
             while (!lexer.IsAtEnd())
             {
@@ -91,9 +90,9 @@ namespace Ivy.Frontend
 
         private void ScanOperator()
         {
-            if (_start + 2 < _sourceCode.Length)
+            if (_start + 2 < _file.SourceCode.Length)
             {
-                var twoCharOperator = _sourceCode.Substring(_start, 2);
+                var twoCharOperator = _file.SourceCode.Substring(_start, 2);
                 if (_twoCharsOperators.TryGetValue(twoCharOperator, out var twoCharsOperator))
                 {
                     PushToken(twoCharsOperator);
@@ -118,7 +117,7 @@ namespace Ivy.Frontend
             while (char.IsLetterOrDigit(PeekNextCharacter()))
                 GetNextCharacter();
 
-            var identifier = _sourceCode.Substring(_start, _current - _start);
+            var identifier = _file.SourceCode.Substring(_start, _current - _start);
             PushToken(_keywords.TryGetValue(identifier, out var keywordType)
                 ? keywordType
                 : TokenType.Identifier);
@@ -127,11 +126,10 @@ namespace Ivy.Frontend
         private void PushToken(TokenType type)
         {
             var length = _current - _start;
-            var lexeme = _sourceCode.Substring(_start, length);
-            var position = _start;
-            var column = _current - _lastNewLine;
+            var tokenSpan = new SourceCodeSpan(_file, _start, length);
+            var lexeme = _file.SourceCode.Substring(_start, length);
             object literal = null;
-
+            
             // ReSharper disable once SwitchStatementMissingSomeCases
             switch (type)
             {
@@ -140,20 +138,20 @@ namespace Ivy.Frontend
                     break;
 
                 case TokenType.Unknown:
-                    IvyInterpreter.Context.Instance.ReportError(_filePath, _line, column,
+                    IvyInterpreter.Context.Instance.ReportError(tokenSpan,
                         $"Invalid token `{lexeme}'.");
                     break;
             }
 
-            _tokens.Add(new Token(type, lexeme, literal, _filePath, _line, column, position, length));
+            _tokens.Add(new Token(type, lexeme, literal, tokenSpan));
         }
 
-        private bool IsAtEnd() => _current >= _sourceCode.Length;
+        private bool IsAtEnd() => _current >= _file.SourceCode.Length;
 
-        private char GetNextCharacter() => _sourceCode[_current++];
+        private char GetNextCharacter() => _file.SourceCode[_current++];
 
-        private char PeekCurrentCharacter() => _current == 0 ? '\0' : _sourceCode[_current - 1];
+        private char PeekCurrentCharacter() => _current == 0 ? '\0' : _file.SourceCode[_current - 1];
         
-        private char PeekNextCharacter() => IsAtEnd() ? '\0' : _sourceCode[_current];
+        private char PeekNextCharacter() => IsAtEnd() ? '\0' : _file.SourceCode[_current];
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -41,9 +42,7 @@ namespace Ivy.Frontend
             }
             catch (ParseException e)
             {
-                var token = e.Token;
-                IvyInterpreter.Context.Instance.ReportError(token.FilePath, token.Line,
-                    token.Column, e.Message);
+                IvyInterpreter.Context.Instance.ReportError(e.Token.Span, e.Message);
             }
 
             return ast;
@@ -112,10 +111,19 @@ namespace Ivy.Frontend
 
         private List<Statement> ParseBlock(params TokenType[] until)
         {
+            var newUntil = new TokenType[until.Length + 1];
+            until.CopyTo(newUntil, 0);
+            newUntil[newUntil.Length - 1] = TokenType.EndOfFile;
+
+            var beginToken = PeekPreviousToken();
+            
             var statements = new List<Statement>();
-            // TODO: What if we encounter EOF token?
-            while (!MatchToken(until))
+            while (!MatchToken(newUntil))
                 statements.Add(ParseStatement());
+
+            if (PeekCurrentToken().Type == TokenType.EndOfFile)
+                ReportError(beginToken, "No `end' to match this `:'.");
+                
             return statements;
         }
 
@@ -141,7 +149,7 @@ namespace Ivy.Frontend
                 if (operatorPrecedence < nextOperatorPrecedence)
                     right = ParseBinaryExpression(right, operatorPrecedence + 1);
 
-                left = new Expression.Binary(left, @operator, right);
+                left = new Expression.Binary(left.Span, left, @operator, right);
             }
         }
 
@@ -156,10 +164,10 @@ namespace Ivy.Frontend
             switch (token.Type)
             {
                 case TokenType.Integer:
-                    return new Expression.Literal(token.Literal);
+                    return new Expression.Literal(token.Span, token.Literal);
                 
                 case TokenType.Identifier:
-                    return new Expression.AtomReference(token);
+                    return new Expression.AtomReference(token.Span, token);
                 
                 default:
                     throw new ParseException($"Expected primary expression, got {token.Type.ToString()}.", token);
@@ -210,5 +218,10 @@ namespace Ivy.Frontend
 
         private int GetNextTokenPrecedence() =>
             BinaryOperatorPrecedence.GetValueOrDefault(PeekCurrentToken().Type, -1);
+
+        private void ReportError(Token token, string message)
+        {
+            IvyInterpreter.Context.Instance.ReportError(token.Span, message);
+        }
     }
 }

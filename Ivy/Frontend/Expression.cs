@@ -1,3 +1,5 @@
+using Ivy.Utils;
+
 namespace Ivy.Frontend
 {
     public abstract class Expression
@@ -16,7 +18,8 @@ namespace Ivy.Frontend
             public readonly Token Operator;
             public readonly Expression Right;
 
-            public Binary(Expression left, Token @operator, Expression right)
+            public Binary(SourceCodeSpan span, Expression left, Token @operator, Expression right)
+                : base(span)
             {
                 Left = left;
                 Operator = @operator;
@@ -31,7 +34,8 @@ namespace Ivy.Frontend
             public readonly Token Operator;
             public readonly Expression Right;
 
-            public Unary(Token @operator, Expression right)
+            public Unary(SourceCodeSpan span, Token @operator, Expression right)
+                : base(span)
             {
                 Operator = @operator;
                 Right = right;
@@ -44,7 +48,8 @@ namespace Ivy.Frontend
         {
             public readonly object Value;
 
-            public Literal(object value)
+            public Literal(SourceCodeSpan span, object value)
+                : base(span)
             {
                 Value = value;
             }
@@ -56,8 +61,9 @@ namespace Ivy.Frontend
         public class AtomReference : Expression
         {
             public Token Identifier;
-            
-            public AtomReference(Token identifier)
+
+            public AtomReference(SourceCodeSpan span, Token identifier)
+                : base(span)
             {
                 Identifier = identifier;
             }
@@ -66,6 +72,13 @@ namespace Ivy.Frontend
                 visitor.VisitAtomReference(this);
         }
 
+        public SourceCodeSpan Span { get; }
+
+        public Expression(SourceCodeSpan span)
+        {
+            Span = span;
+        }
+        
         public abstract T Accept<T>(IVisitor<T> visitor);
     }
 }
