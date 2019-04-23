@@ -38,22 +38,24 @@ namespace Ivy.Frontend
                 {">", TokenType.Greater},
             };
 
+        private readonly string _filePath;
         private readonly string _sourceCode;
         private readonly List<Token> _tokens = new List<Token>();
-               
+
         private int _start = 0;
         private int _current = 0;
         private int _line = 1;
         private int _lastNewLine = 0;
 
-        private Lexer(string sourceCode)
+        private Lexer(string filePath, string sourceCode)
         {
+            _filePath = filePath;
             _sourceCode = sourceCode;
         }
 
-        public static List<Token> ScanTokens(string sourceCode)
+        public static List<Token> ScanTokens(string filePath, string sourceCode)
         {
-            var lexer = new Lexer(sourceCode);
+            var lexer = new Lexer(filePath, sourceCode);
             
             while (!lexer.IsAtEnd())
             {
@@ -89,16 +91,13 @@ namespace Ivy.Frontend
 
         private void ScanOperator()
         {
-            try
+            if (_start + 2 < _sourceCode.Length)
             {
                 var twoCharOperator = _sourceCode.Substring(_start, 2);
                 if (_twoCharsOperators.TryGetValue(twoCharOperator, out var twoCharsOperator))
                 {
                     PushToken(twoCharsOperator);
                 }
-            }
-            catch (IndexOutOfRangeException)
-            {
             }
 
             var c = PeekCurrentCharacter();
@@ -124,23 +123,29 @@ namespace Ivy.Frontend
                 ? keywordType
                 : TokenType.Identifier);
         }
-        
+
         private void PushToken(TokenType type)
         {
             var length = _current - _start;
             var lexeme = _sourceCode.Substring(_start, length);
+            var position = _start;
+            var column = _current - _lastNewLine;
             object literal = null;
-            
+
             // ReSharper disable once SwitchStatementMissingSomeCases
             switch (type)
             {
                 case TokenType.Integer:
                     literal = long.Parse(lexeme);
                     break;
+
+                case TokenType.Unknown:
+                    IvyInterpreter.Context.Instance.ReportError(_filePath, _line, column,
+                        $"Invalid token `{lexeme}'.");
+                    break;
             }
 
-            _tokens.Add(new Token(type, lexeme, literal, "", _line, _current - _lastNewLine, _start,
-                length));
+            _tokens.Add(new Token(type, lexeme, literal, _filePath, _line, column, position, length));
         }
 
         private bool IsAtEnd() => _current >= _sourceCode.Length;

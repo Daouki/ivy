@@ -162,7 +162,7 @@ namespace Ivy.Frontend
                     return new Expression.AtomReference(token);
                 
                 default:
-                    throw new ParseException("Expected primary expression", token);
+                    throw new ParseException($"Expected primary expression, got {token.Type.ToString()}.", token);
             }
         }
 
@@ -190,7 +190,7 @@ namespace Ivy.Frontend
         private Token ConsumeToken(params TokenType[] types)
         {
             if (!MatchToken(types))
-                throw new ParseException($"Expected token type: [{string.Join(", ", types)}]",
+                throw new ParseException($"Expected token type: [{string.Join(", ", types)}], got {PeekCurrentToken().Type.ToString()}.",
                     PeekCurrentToken());
             return PeekPreviousToken();
         }

@@ -47,7 +47,7 @@ namespace Ivy
             try
             {
                 var sourceCode = File.ReadAllText(filePath);
-                RunCode(sourceCode);
+                var reportedErrors = RunCode(filePath, sourceCode);
             }
             catch (IOException e)
             {
@@ -56,22 +56,22 @@ namespace Ivy
             }
         }
 
-        private static void RunCode(string sourceCode)
+        private static bool RunCode(string filePath, string sourceCode)
         {
-            var tokens = Lexer.ScanTokens(sourceCode);
+            var tokens = Lexer.ScanTokens(filePath, sourceCode);
             if (Context.Instance.ErrorsReported > 0)
-                return;
+                return true;
 
             var ast = Parser.Parse(tokens);
             if (Context.Instance.ErrorsReported > 0)
-                return;
+                return true;
 
             // TODO: Scanning on demand.
             tokens.Clear();
 
             var byteCode = Compiler.Compile(ast);
             if (Context.Instance.ErrorsReported > 0)
-                return;
+                return true;
 
 #if DEBUG
             Disassembler.Disassemble(byteCode.ToArray());
@@ -79,6 +79,7 @@ namespace Ivy
 #endif
 
             VirtualMachine.Execute(byteCode);
+            return false;
         }
     }
 }
