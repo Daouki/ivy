@@ -13,7 +13,14 @@ namespace Ivy.Runtime
 
         public static void Execute(List<byte> byteCode)
         {
-            new VirtualMachine(byteCode).Execute();
+            try
+            {
+                new VirtualMachine(byteCode).Execute();
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.Error.WriteLine($"Runtime error: {e.Message}");
+            }
         }
         
         private VirtualMachine(List<byte> byteCode)
@@ -58,7 +65,7 @@ namespace Ivy.Runtime
                         _stack.Push(left / right);
                         break;
                     }
-                    
+
                     case Instruction.MulI:
                     {
                         var left = _stack.Pop();
@@ -66,7 +73,7 @@ namespace Ivy.Runtime
                         _stack.Push(left * right);
                         break;
                     }
-                    
+
                     case Instruction.SubI:
                     {
                         var left = _stack.Pop();
@@ -74,7 +81,7 @@ namespace Ivy.Runtime
                         _stack.Push(left - right);
                         break;
                     }
-                    
+
                     case Instruction.CmpLessI:
                     {
                         var left = _stack.Pop();
@@ -82,7 +89,7 @@ namespace Ivy.Runtime
                         _stack.Push(left < right ? 1ul : 0);
                         break;
                     }
-                    
+
                     case Instruction.CmpGreaterI:
                     {
                         var left = _stack.Pop();
@@ -90,23 +97,23 @@ namespace Ivy.Runtime
                         _stack.Push(left > right ? 1ul : 0);
                         break;
                     }
-                    
+
                     case Instruction.ShiftLeft:
                     {
                         var left = _stack.Pop();
-                        var right = (int)_stack.Pop();
+                        var right = (int) _stack.Pop();
                         _stack.Push(left << right);
                         break;
                     }
-                    
+
                     case Instruction.ShiftRight:
                     {
                         var left = _stack.Pop();
-                        var right = (int)_stack.Pop();
+                        var right = (int) _stack.Pop();
                         _stack.Push(left >> right);
                         break;
                     }
-                    
+
                     case Instruction.Store:
                     {
                         var location = (int) GetUInt64FromByteCode();
@@ -115,6 +122,7 @@ namespace Ivy.Runtime
                             var value = _stack.Pop();
                             _stack.Set(location, value);
                         }
+
                         break;
                     }
 
@@ -153,6 +161,7 @@ namespace Ivy.Runtime
                         {
                             _instructionPointer += 8;
                         }
+
                         break;
                     }
 
@@ -168,6 +177,7 @@ namespace Ivy.Runtime
                         {
                             _instructionPointer += 8;
                         }
+
                         break;
                     }
 
@@ -177,9 +187,10 @@ namespace Ivy.Runtime
                         Console.WriteLine(value);
                         break;
                     }
-                    
+
                     default:
-                        throw new Exception("Invalid instruction");
+                        throw new InvalidOperationException(
+                            $"Invalid instruction 0x{instruction:X} at position {_instructionPointer}.");
                 }
             }
         }
