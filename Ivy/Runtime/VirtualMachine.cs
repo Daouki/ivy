@@ -82,6 +82,46 @@ namespace Ivy.Runtime
                         break;
                     }
 
+                    case Instruction.Or:
+                    {
+                        var left = _stack.Pop();
+                        var right = _stack.Pop();
+                        _stack.Push(left | right);
+                        break;
+                    }
+
+                    case Instruction.And:
+                    {
+                        var left = _stack.Pop();
+                        var right = _stack.Pop();
+                        _stack.Push(left & right);
+                        break;
+                    }
+                    
+                    case Instruction.Xor:
+                    {
+                        var left = _stack.Pop();
+                        var right = _stack.Pop();
+                        _stack.Push(left ^ right);
+                        break;
+                    }
+
+                    case Instruction.Shl:
+                    {
+                        var left = _stack.Pop();
+                        var right = (int) _stack.Pop();
+                        _stack.Push(left << right);
+                        break;
+                    }
+
+                    case Instruction.Shr:
+                    {
+                        var left = _stack.Pop();
+                        var right = (int) _stack.Pop();
+                        _stack.Push(left >> right);
+                        break;
+                    }
+
                     case Instruction.CmpLessI:
                     {
                         var left = _stack.Pop();
@@ -95,22 +135,6 @@ namespace Ivy.Runtime
                         var left = _stack.Pop();
                         var right = _stack.Pop();
                         _stack.Push(left > right ? 1ul : 0);
-                        break;
-                    }
-
-                    case Instruction.ShiftLeft:
-                    {
-                        var left = _stack.Pop();
-                        var right = (int) _stack.Pop();
-                        _stack.Push(left << right);
-                        break;
-                    }
-
-                    case Instruction.ShiftRight:
-                    {
-                        var left = _stack.Pop();
-                        var right = (int) _stack.Pop();
-                        _stack.Push(left >> right);
                         break;
                     }
 
@@ -187,7 +211,6 @@ namespace Ivy.Runtime
                         Console.WriteLine(value);
                         break;
                     }
-
                     default:
                         throw new InvalidOperationException(
                             $"Invalid instruction 0x{instruction:X} at position {_instructionPointer}.");

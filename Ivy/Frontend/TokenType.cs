@@ -16,9 +16,12 @@ namespace Ivy.Frontend
         While,
         
         // Operators.
+        Ampersand,
         Asterisk,
+        Caret,
         Equal,
         Minus,
+        Pipe,
         Plus,
         Slash,
         Less,

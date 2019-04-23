@@ -9,14 +9,17 @@ namespace Ivy.Frontend
         private static readonly Dictionary<TokenType, int> BinaryOperatorPrecedence =
             new Dictionary<TokenType, int>
             {
-                {TokenType.Less, 10},
-                {TokenType.Greater, 10},
-                {TokenType.LessLess, 20},
-                {TokenType.GreaterGreater, 20},
-                {TokenType.Minus, 30},
-                {TokenType.Plus, 30},
-                {TokenType.Asterisk, 40},
-                {TokenType.Slash, 40},
+                {TokenType.Caret, 80},
+                {TokenType.Pipe, 90},
+                {TokenType.Ampersand, 100},
+                {TokenType.Less, 140},
+                {TokenType.Greater, 140},
+                {TokenType.LessLess, 150},
+                {TokenType.GreaterGreater, 150},
+                {TokenType.Minus, 190},
+                {TokenType.Plus, 190},
+                {TokenType.Asterisk, 200},
+                {TokenType.Slash, 200},
             };
         
         private readonly List<Token> _tokens;

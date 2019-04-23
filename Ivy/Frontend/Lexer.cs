@@ -28,12 +28,15 @@ namespace Ivy.Frontend
         private static readonly Dictionary<string, TokenType> _singleCharOperators =
             new Dictionary<string, TokenType>
             {
+                {"&", TokenType.Ampersand},
                 {"*", TokenType.Asterisk},
+                {"^", TokenType.Caret},
                 {":", TokenType.Colon},
                 {"=", TokenType.Equal},
                 {"-", TokenType.Minus},
                 {";", TokenType.Semicolon},
                 {"/", TokenType.Slash},
+                {"|", TokenType.Pipe},
                 {"+", TokenType.Plus},
                 {"<", TokenType.Less},
                 {">", TokenType.Greater},

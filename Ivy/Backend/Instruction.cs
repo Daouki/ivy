@@ -11,12 +11,15 @@ namespace Ivy.Backend
         DivI,          
         MulI,
         SubI,
+        
+        Or,
+        And,
+        Xor,
+        Shl,
+        Shr,
 
         CmpLessI,
         CmpGreaterI,
-        
-        ShiftLeft,
-        ShiftRight,
         
         Store,
         Load,

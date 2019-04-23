@@ -17,55 +17,80 @@ namespace Ivy.Backend
                         break;
 
                     case Instruction.Push64:
-                        Console.Write("PUSH64\t");
+                        Console.Write("PUSH\t");
                         Console.WriteLine(BitConverter.ToInt64(GetSubarray(byteCode, pointer + 1, 8)));
                         pointer += 9;
                         break;
                     
                     case Instruction.Pop64:
-                        Console.Write("POP64");
+                        Console.Write("POP");
                         Console.WriteLine(BitConverter.ToInt64(GetSubarray(byteCode, pointer + 1, 8)));
                         pointer += 9;
                         break;
                     
                     case Instruction.AddI:
-                        Console.WriteLine("ADD64");
+                        Console.WriteLine("ADDI");
                         pointer += 1;
                         break;
                     
                     case Instruction.DivI:
-                        Console.WriteLine("DIV64");
+                        Console.WriteLine("DIVI");
                         pointer += 1;
                         break;
                     
                     case Instruction.MulI:
-                        Console.WriteLine("MUL64");
+                        Console.WriteLine("MUL");
                         pointer += 1;
                         break;
                     
                     case Instruction.SubI:
-                        Console.WriteLine("SUB64");
+                        Console.WriteLine("SUB");
+                        pointer += 1;
+                        break;
+
+                    case Instruction.Or:
+                        Console.WriteLine("OR");
+                        pointer += 1;
+                        break;
+                    
+                    case Instruction.And:
+                        Console.WriteLine("AND");
+                        pointer += 1;
+                        break;
+                    
+                    case Instruction.Xor:
+                        Console.WriteLine("XOR");
+                        pointer += 1;
+                        break;
+                    
+                    case Instruction.Shl:
+                        Console.WriteLine("SHL");
+                        pointer += 1;
+                        break;
+                    
+                    case Instruction.Shr:
+                        Console.WriteLine("SHR");
                         pointer += 1;
                         break;
                     
                     case Instruction.CmpLessI:
-                        Console.WriteLine("CMPL64");
+                        Console.WriteLine("CMPL");
                         pointer += 1;
                         break;
                     
                     case Instruction.CmpGreaterI:
-                        Console.WriteLine("CMPG64");
+                        Console.WriteLine("CMPG");
                         pointer += 1;
                         break;
                     
                     case Instruction.Store:
-                        Console.Write("STORE64\t");
+                        Console.Write("STORE\t");
                         Console.WriteLine(BitConverter.ToInt64(GetSubarray(byteCode, pointer + 1, 8)));
                         pointer += 9;
                         break;
                     
                     case Instruction.Load:
-                        Console.Write("LOAD64\t");
+                        Console.Write("LOAD\t");
                         Console.WriteLine(BitConverter.ToInt64(GetSubarray(byteCode, pointer + 1, 8)));
                         pointer += 9;
                         break;

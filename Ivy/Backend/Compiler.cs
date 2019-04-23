@@ -177,6 +177,18 @@ namespace Ivy.Backend
                     chunk.AddInstruction(Instruction.DivI);
                     break;
                 
+                case TokenType.Ampersand:
+                    chunk.AddInstruction(Instruction.And);
+                    break;
+                
+                case TokenType.Pipe:
+                    chunk.AddInstruction(Instruction.Or);
+                    break;
+                
+                case TokenType.Caret:
+                    chunk.AddInstruction(Instruction.Xor);
+                    break;
+                
                 case TokenType.Less:
                     chunk.AddInstruction(Instruction.CmpLessI);
                     break;
