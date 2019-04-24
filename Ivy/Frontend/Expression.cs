@@ -9,6 +9,7 @@ namespace Ivy.Frontend
             T VisitBinaryExpression(Binary expression);
             T VisitUnaryExpression(Unary expression);
             T VisitLiteral(Literal expression);
+            T VisitGrouping(Grouping expression);
             T VisitAtomReference(AtomReference expression);
         }
         
@@ -42,6 +43,20 @@ namespace Ivy.Frontend
             }
 
             public override T Accept<T>(IVisitor<T> visitor) => visitor.VisitUnaryExpression(this);
+        }
+
+        public class Grouping : Expression
+        {
+            public readonly Expression Expression;
+
+            public Grouping(SourceCodeSpan span, Expression expression)
+                : base(span)
+            {
+                Expression = expression;
+            }
+
+            public override T Accept<T>(IVisitor<T> visitor) =>
+                visitor.VisitGrouping(this);
         }
 
         public class Literal : Expression

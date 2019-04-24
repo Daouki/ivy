@@ -198,7 +198,8 @@ namespace Ivy.Backend
                     break;
                 
                 default:
-                    throw new Exception();
+                    throw new ArgumentOutOfRangeException(
+                        $"`{expression.Operator.Type.ToString()} is not a valid binary operator.'");
             }
             
             return chunk;
@@ -206,8 +207,25 @@ namespace Ivy.Backend
 
         public ByteCodeChunk VisitUnaryExpression(Expression.Unary expression)
         {
-            return null;
+            var chunk = new ByteCodeChunk();
+            chunk.AddRange(VisitExpression(expression.Right));
+            
+            switch (expression.Operator.Type)
+            {
+                case TokenType.Minus:
+                    chunk.AddInstruction(Instruction.NegateI);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(
+                        $"`{expression.Operator.Type.ToString()} is not a valid unary operator.'");
+            }
+
+            return chunk;
         }
+
+        public ByteCodeChunk VisitGrouping(Expression.Grouping expression) =>
+            VisitExpression(expression.Expression);
 
         public ByteCodeChunk VisitLiteral(Expression.Literal expression)
         {

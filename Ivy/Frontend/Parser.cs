@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Ivy.Utils;
 
 namespace Ivy.Frontend
 {
@@ -158,6 +159,13 @@ namespace Ivy.Frontend
 
         private Expression ParseUnaryExpression()
         {
+            if (MatchToken(TokenType.Minus))
+            {
+                var @operator = PeekPreviousToken();
+                var right = ParseUnaryExpression();
+                return new Expression.Unary(@operator.Span, @operator, right);
+            }
+            
             return ParsePrimaryExpression();
         }
 
@@ -172,9 +180,19 @@ namespace Ivy.Frontend
                 case TokenType.Identifier:
                     return new Expression.AtomReference(token.Span, token);
                 
+                case TokenType.LeftParenthesis:
+                    return ParseGroupingExpression(token.Span);
+                
                 default:
                     throw new ParseException($"Expected primary expression, got {token.Type.ToString()}.", token);
             }
+        }
+
+        private Expression ParseGroupingExpression(SourceCodeSpan leftParenthesisSpan)
+        {
+            var expression = ParseExpression();
+            ConsumeToken(TokenType.RightParenthesis);
+            return expression;
         }
 
         /// <summary>

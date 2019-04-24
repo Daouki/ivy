@@ -12,6 +12,8 @@ namespace Ivy.Backend
         MulI,
         SubI,
         
+        NegateI,
+        
         Or,
         And,
         Xor,

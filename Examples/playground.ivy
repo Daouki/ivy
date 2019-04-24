@@ -12,3 +12,6 @@ if b > 30:
 end
 
 print c;
+
+let d = (2 + 2) * 2;
+print d;

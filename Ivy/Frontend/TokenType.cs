@@ -16,6 +16,8 @@ namespace Ivy.Frontend
         While,
         
         // Operators.
+        LeftParenthesis,
+        RightParenthesis,
         Ampersand,
         Asterisk,
         Caret,
